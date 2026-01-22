@@ -1,22 +1,21 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Makmur Sentosa "MINUMO" - Pembukuan Sederhana</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Makmur Sentosa "MINUMO"</title>
 
-  <!-- CSS Dark Mode -->
-  <link rel="stylesheet" href="style.css">
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4CAF50" />
+  <link rel="icon" href="assets/192.png" type="image/png" />
 
-  <!-- Manifest & Icon untuk PWA -->
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#4CAF50">
-  <link rel="icon" href="assets/192.png" type="image/png">
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
   <header>
     <h1>Makmur Sentosa "MINUMO"</h1>
-    <h2>Pembukuan Sederhana</h2>
   </header>
 
   <section class="form-section">
@@ -32,20 +31,19 @@
           <th>Aksi</th>
         </tr>
       </thead>
-      <tbody>
-        <!-- Baris data akan masuk di sini -->
-      </tbody>
+      <tbody></tbody>
     </table>
 
     <div class="form-inputs">
-      <input type="text" id="namaPelanggan" placeholder="Nama Pelanggan">
-      <input type="date" id="tanggal">
+      <input type="text" id="namaPelanggan" placeholder="Nama Pelanggan" />
+      <input type="date" id="tanggal" />
       <select id="jenis">
         <option value="Pemasukan">Pemasukan</option>
         <option value="Pengeluaran">Pengeluaran</option>
       </select>
-      <input type="number" id="jumlah" placeholder="Jumlah Barang">
-      <input type="number" id="harga" placeholder="Harga Barang">
+      <input type="number" id="jumlah" placeholder="Jumlah Barang" />
+      <input type="number" id="harga" placeholder="Harga Barang" />
+
       <button onclick="tambahData()">Tambah Data</button>
       <button onclick="hapusSemua()">Hapus Semua</button>
       <button onclick="exportPDF()">Export PDF</button>
@@ -60,12 +58,21 @@
     <p>Akumulasi Infaq: <span id="totalInfaq">0</span></p>
   </section>
 
+  <!-- Library Export Excel -->
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Library Export PDF -->
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.29/dist/jspdf.plugin.autotable.min.js"></script>
+
   <script src="script.js"></script>
+
   <script>
-    // Service Worker supaya app bisa installable
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js')
-        .then(() => console.log('Service Worker Registered'));
+    // Service Worker supaya bisa install jadi aplikasi
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js")
+        .then(() => console.log("Service Worker Registered"))
+        .catch(err => console.log("SW Error:", err));
     }
   </script>
 </body>
