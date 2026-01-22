@@ -1,18 +1,19 @@
 let data = [];
 
 function tambahData() {
+  const nama = document.getElementById("namaPelanggan").value;
   const tanggal = document.getElementById("tanggal").value;
   const jenis = document.getElementById("jenis").value;
   const jumlah = parseInt(document.getElementById("jumlah").value) || 0;
   const harga = parseInt(document.getElementById("harga").value) || 0;
-  const potongan = jumlah * 500; // Rp500 per produk untuk infaq
+  const potongan = jumlah * 500;
 
-  if (!tanggal || jumlah <= 0 || harga <= 0) {
+  if (!nama || !tanggal || jumlah <= 0 || harga <= 0) {
     alert("Isi semua field dengan benar!");
     return;
   }
 
-  const item = { tanggal, jenis, jumlah, harga, potongan };
+  const item = { nama, tanggal, jenis, jumlah, harga, potongan };
   data.push(item);
   renderTable();
   updateInfo();
@@ -24,6 +25,7 @@ function renderTable() {
   data.forEach((item, index) => {
     const row = document.createElement("tr");
     row.innerHTML = `
+      <td>${item.nama}</td>
       <td>${item.tanggal}</td>
       <td>${item.jenis}</td>
       <td>${item.jumlah}</td>
@@ -66,6 +68,5 @@ function updateInfo() {
   document.getElementById("totalInfaq").textContent = totalInfaq;
 }
 
-// Placeholder untuk Export (bisa pakai library seperti jsPDF dan SheetJS)
 function exportPDF() { alert("Export PDF belum diimplementasikan"); }
 function exportExcel() { alert("Export Excel belum diimplementasikan"); }
