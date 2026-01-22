@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -10,14 +10,18 @@
   <meta name="theme-color" content="#4CAF50" />
   <link rel="icon" href="assets/192.png" type="image/png" />
 
+  <!-- CSS -->
   <link rel="stylesheet" href="style.css" />
 </head>
 
 <body>
+
+  <!-- HEADER -->
   <header>
     <h1>Makmur Sentosa "MINUMO"</h1>
   </header>
 
+  <!-- TABEL DATA -->
   <section class="form-section">
     <table id="dataTable">
       <thead>
@@ -28,12 +32,13 @@
           <th>Jumlah Barang</th>
           <th>Harga Barang</th>
           <th>Potongan Infaq</th>
-          <th>Aksi</th>
+          <th>Hapus Input</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
 
+    <!-- FORM INPUT -->
     <div class="form-inputs">
       <input type="text" id="namaPelanggan" placeholder="Nama Pelanggan" />
       <input type="date" id="tanggal" />
@@ -44,13 +49,15 @@
       <input type="number" id="jumlah" placeholder="Jumlah Barang" />
       <input type="number" id="harga" placeholder="Harga Barang" />
 
+      <!-- TOMBOL -->
       <button onclick="tambahData()">Tambah Data</button>
-      <button onclick="hapusSemua()">Hapus Semua</button>
-      <button onclick="exportPDF()">Export PDF</button>
-      <button onclick="exportExcel()">Export Excel</button>
+      <button class="btn-danger" onclick="hapusSemua()">Hapus Semua</button>
+      <button class="btn-primary" onclick="exportPDF()">Export PDF</button>
+      <button class="btn-success" onclick="exportExcel()">Export Excel</button>
     </div>
   </section>
 
+  <!-- INFO TOTAL -->
   <section class="info-section">
     <p>Total Pemasukan: <span id="totalPemasukan">0</span></p>
     <p>Total Pengeluaran: <span id="totalPengeluaran">0</span></p>
@@ -58,22 +65,22 @@
     <p>Akumulasi Infaq: <span id="totalInfaq">0</span></p>
   </section>
 
-  <!-- Library Export Excel -->
+  <!-- LIBRARY EXPORT -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-  <!-- Library Export PDF -->
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.29/dist/jspdf.plugin.autotable.min.js"></script>
 
+  <!-- SCRIPT APP -->
   <script src="script.js"></script>
 
+  <!-- SERVICE WORKER -->
   <script>
-    // Service Worker supaya bisa install jadi aplikasi
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("sw.js")
         .then(() => console.log("Service Worker Registered"))
         .catch(err => console.log("SW Error:", err));
     }
   </script>
+
 </body>
 </html>
