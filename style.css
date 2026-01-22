@@ -1,3 +1,6 @@
+/* ===============================
+   GLOBAL
+=============================== */
 body {
   background-color: #121212;
   color: #e0e0e0;
@@ -11,6 +14,9 @@ header h1 {
   margin-bottom: 20px;
 }
 
+/* ===============================
+   TABLE
+=============================== */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -30,6 +36,9 @@ th {
   font-weight: bold;
 }
 
+/* ===============================
+   FORM INPUT
+=============================== */
 .form-inputs {
   display: flex;
   flex-wrap: wrap;
@@ -47,19 +56,55 @@ th {
   min-width: 160px;
 }
 
+/* ===============================
+   BUTTON DEFAULT
+=============================== */
 .form-inputs button {
   padding: 8px 12px;
-  border: 1px solid #555;
-  background-color: #2a2a2a;
+  border: 1px solid transparent;
   color: #ffffff;
   border-radius: 4px;
   cursor: pointer;
+  background-color: #2a2a2a;
 }
 
+/* ===============================
+   BUTTON COLORS
+=============================== */
+.form-inputs .btn-danger {
+  background-color: #c62828; /* merah */
+}
+
+.form-inputs .btn-primary {
+  background-color: #1565c0; /* biru */
+}
+
+.form-inputs .btn-success {
+  background-color: #2e7d32; /* hijau */
+}
+
+/* ===============================
+   BUTTON HOVER
+=============================== */
 .form-inputs button:hover {
-  background-color: #3a3a3a;
+  opacity: 0.9;
 }
 
+.form-inputs .btn-danger:hover {
+  background-color: #e53935;
+}
+
+.form-inputs .btn-primary:hover {
+  background-color: #1e88e5;
+}
+
+.form-inputs .btn-success:hover {
+  background-color: #43a047;
+}
+
+/* ===============================
+   INFO SECTION
+=============================== */
 .info-section p {
   font-weight: bold;
   color: #ffffff;
