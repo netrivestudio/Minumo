@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Makmur Sentosa "MINUMO" - Pembukuan Sederhana</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Makmur Sentosa "MINUMO"</h1>
+    <h2>Pembukuan Sederhana</h2>
+  </header>
+
+  <section class="form-section">
+    <table id="dataTable">
+      <thead>
+        <tr>
+          <th>Tanggal</th>
+          <th>Pemasukan / Pengeluaran</th>
+          <th>Jumlah Barang</th>
+          <th>Harga Barang</th>
+          <th>Potongan Infaq</th>
+          <th>Aksi</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Baris data akan masuk di sini -->
+      </tbody>
+    </table>
+
+    <div class="form-inputs">
+      <input type="date" id="tanggal">
+      <select id="jenis">
+        <option value="Pemasukan">Pemasukan</option>
+        <option value="Pengeluaran">Pengeluaran</option>
+      </select>
+      <input type="number" id="jumlah" placeholder="Jumlah Barang">
+      <input type="number" id="harga" placeholder="Harga Barang">
+      <button onclick="tambahData()">Tambah Data</button>
+      <button onclick="hapusSemua()">Hapus Semua</button>
+      <button onclick="exportPDF()">Export PDF</button>
+      <button onclick="exportExcel()">Export Excel</button>
+    </div>
+  </section>
+
+  <section class="info-section">
+    <p>Total Pemasukan: <span id="totalPemasukan">0</span></p>
+    <p>Total Pengeluaran: <span id="totalPengeluaran">0</span></p>
+    <p>Saldo Akhir: <span id="saldoAkhir">0</span></p>
+    <p>Akumulasi Infaq: <span id="totalInfaq">0</span></p>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>
