@@ -4,7 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Makmur Sentosa "MINUMO" - Pembukuan Sederhana</title>
+
+  <!-- CSS Dark Mode -->
   <link rel="stylesheet" href="style.css">
+
+  <!-- Manifest & Icon untuk PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#4CAF50">
+  <link rel="icon" href="assets/192.png" type="image/png">
 </head>
 <body>
   <header>
@@ -16,6 +23,7 @@
     <table id="dataTable">
       <thead>
         <tr>
+          <th>Nama Pelanggan</th>
           <th>Tanggal</th>
           <th>Pemasukan / Pengeluaran</th>
           <th>Jumlah Barang</th>
@@ -30,6 +38,7 @@
     </table>
 
     <div class="form-inputs">
+      <input type="text" id="namaPelanggan" placeholder="Nama Pelanggan">
       <input type="date" id="tanggal">
       <select id="jenis">
         <option value="Pemasukan">Pemasukan</option>
@@ -52,5 +61,12 @@
   </section>
 
   <script src="script.js"></script>
+  <script>
+    // Service Worker supaya app bisa installable
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker Registered'));
+    }
+  </script>
 </body>
 </html>
