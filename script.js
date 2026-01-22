@@ -31,7 +31,6 @@ function tambahData() {
   renderTable();
   updateInfo();
 
-  // reset input
   document.getElementById("namaPelanggan").value = "";
   document.getElementById("jumlah").value = "";
   document.getElementById("harga").value = "";
@@ -53,9 +52,7 @@ function renderTable() {
       <td>${item.jumlah}</td>
       <td>${item.harga}</td>
       <td>${item.potongan}</td>
-      <td>
-        <button onclick="hapusBaris(${index})">Hapus</button>
-      </td>
+      <td><button onclick="hapusBaris(${index})">Hapus</button></td>
     `;
     tbody.appendChild(row);
   });
@@ -93,11 +90,8 @@ function updateInfo() {
 
   data.forEach(item => {
     const total = item.jumlah * item.harga;
-    if (item.jenis === "Pemasukan") {
-      totalPemasukan += total;
-    } else {
-      totalPengeluaran += total;
-    }
+    if (item.jenis === "Pemasukan") totalPemasukan += total;
+    else totalPengeluaran += total;
     totalInfaq += item.potongan;
   });
 
@@ -135,7 +129,7 @@ function exportExcel() {
 }
 
 // ===============================
-// EXPORT PDF
+// EXPORT PDF (VERSI LENGKAP)
 // ===============================
 function exportPDF() {
   if (data.length === 0) {
@@ -146,9 +140,15 @@ function exportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
 
-  doc.setFontSize(14);
+  // Judul
+  doc.setFontSize(16);
   doc.text('Makmur Sentosa "MINUMO"', 14, 15);
 
+  // Tanggal export
+  doc.setFontSize(10);
+  doc.text(`Export: ${new Date().toLocaleString("id-ID")}`, 14, 22);
+
+  // Tabel
   const head = [[
     "No", "Nama", "Tanggal", "Jenis", "Jumlah", "Harga", "Total", "Infaq"
   ]];
@@ -167,8 +167,30 @@ function exportPDF() {
   doc.autoTable({
     head: head,
     body: body,
-    startY: 25
+    startY: 28,
+    styles: { fontSize: 10 }
   });
+
+  // Ringkasan
+  let totalPemasukan = 0;
+  let totalPengeluaran = 0;
+  let totalInfaq = 0;
+
+  data.forEach(item => {
+    const total = item.jumlah * item.harga;
+    if (item.jenis === "Pemasukan") totalPemasukan += total;
+    else totalPengeluaran += total;
+    totalInfaq += item.potongan;
+  });
+
+  const saldoAkhir = totalPemasukan - totalPengeluaran;
+
+  let y = doc.lastAutoTable.finalY + 10;
+  doc.setFontSize(11);
+  doc.text(`Total Pemasukan   : ${totalPemasukan}`, 14, y);
+  doc.text(`Total Pengeluaran : ${totalPengeluaran}`, 14, y + 6);
+  doc.text(`Saldo Akhir       : ${saldoAkhir}`, 14, y + 12);
+  doc.text(`Akumulasi Infaq   : ${totalInfaq}`, 14, y + 18);
 
   doc.save("Pembukuan_MINUMO.pdf");
 }
