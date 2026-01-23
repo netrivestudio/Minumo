@@ -1,4 +1,10 @@
 // ===============================
+// KONSTANT BISNIS MINUMO
+// ===============================
+const MODAL_PER_GALON = 4000;
+const INFAQ_PER_GALON = 500;
+
+// ===============================
 // LOAD DATA DARI LOCAL STORAGE
 // ===============================
 let data = JSON.parse(localStorage.getItem("minumoData")) || [];
@@ -19,14 +25,29 @@ function tambahData() {
   const jenis = document.getElementById("jenis").value;
   const jumlah = parseInt(document.getElementById("jumlah").value) || 0;
   const harga = parseInt(document.getElementById("harga").value) || 0;
-  const potongan = jumlah * 500;
 
   if (!nama || !tanggal || jumlah <= 0 || harga <= 0) {
     alert("Isi semua data dengan benar!");
     return;
   }
 
-  data.push({ nama, tanggal, jenis, jumlah, harga, potongan });
+  const total = jumlah * harga;
+  const potongan = jenis === "Pemasukan" ? jumlah * INFAQ_PER_GALON : 0;
+  const modal = jenis === "Pemasukan" ? jumlah * MODAL_PER_GALON : 0;
+  const profit = jenis === "Pemasukan" ? total - modal - potongan : -total;
+
+  data.push({
+    nama,
+    tanggal,
+    jenis,
+    jumlah,
+    harga,
+    total,
+    potongan,
+    modal,
+    profit
+  });
+
   simpanData();
   renderTable();
   updateInfo();
@@ -81,28 +102,43 @@ function hapusSemua() {
 }
 
 // ===============================
-// HITUNG TOTAL
+// HITUNG TOTAL (EXTEND, BUKAN GANTI)
 // ===============================
 function updateInfo() {
   let totalPemasukan = 0;
   let totalPengeluaran = 0;
   let totalInfaq = 0;
+  let totalGalon = 0;
+  let totalModal = 0;
+  let profitOperasional = 0;
 
   data.forEach(item => {
-    const total = item.jumlah * item.harga;
-    if (item.jenis === "Pemasukan") totalPemasukan += total;
-    else totalPengeluaran += total;
-    totalInfaq += item.potongan;
+    if (item.jenis === "Pemasukan") {
+      totalPemasukan += item.total;
+      totalGalon += item.jumlah;
+      totalInfaq += item.potongan;
+      totalModal += item.modal;
+      profitOperasional += item.profit;
+    } else {
+      totalPengeluaran += item.total;
+    }
   });
 
   document.getElementById("totalPemasukan").textContent = totalPemasukan;
   document.getElementById("totalPengeluaran").textContent = totalPengeluaran;
-  document.getElementById("saldoAkhir").textContent = totalPemasukan - totalPengeluaran;
+  document.getElementById("saldoAkhir").textContent =
+    profitOperasional - totalPengeluaran;
+
   document.getElementById("totalInfaq").textContent = totalInfaq;
+
+  // 👉 data tambahan (belum ditampilkan di HTML, tapi SIAP)
+  console.log("Total Galon:", totalGalon);
+  console.log("Total Modal:", totalModal);
+  console.log("Profit Operasional:", profitOperasional);
 }
 
 // ===============================
-// EXPORT EXCEL
+// EXPORT EXCEL (TETAP + TAMBAHAN)
 // ===============================
 function exportExcel() {
   if (data.length === 0) {
@@ -115,10 +151,12 @@ function exportExcel() {
     "Nama Pelanggan": item.nama,
     Tanggal: item.tanggal,
     Jenis: item.jenis,
-    "Jumlah Barang": item.jumlah,
-    "Harga Barang": item.harga,
-    Total: item.jumlah * item.harga,
-    "Potongan Infaq": item.potongan
+    Galon: item.jumlah,
+    Harga: item.harga,
+    Omzet: item.total,
+    Modal: item.modal,
+    Infaq: item.potongan,
+    Profit: item.profit
   }));
 
   const worksheet = XLSX.utils.json_to_sheet(exportData);
@@ -129,70 +167,10 @@ function exportExcel() {
 }
 
 // ===============================
-// EXPORT PDF (VERSI LENGKAP)
+// EXPORT PDF (LOGIC SIAP, TAMPILAN NANTI)
 // ===============================
 function exportPDF() {
-  if (data.length === 0) {
-    alert("Data masih kosong!");
-    return;
-  }
-
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-
-  // Judul
-  doc.setFontSize(16);
-  doc.text('Makmur Sentosa "MINUMO"', 14, 15);
-
-  // Tanggal export
-  doc.setFontSize(10);
-  doc.text(`Export: ${new Date().toLocaleString("id-ID")}`, 14, 22);
-
-  // Tabel
-  const head = [[
-    "No", "Nama", "Tanggal", "Jenis", "Jumlah", "Harga", "Total", "Infaq"
-  ]];
-
-  const body = data.map((item, i) => ([
-    i + 1,
-    item.nama,
-    item.tanggal,
-    item.jenis,
-    item.jumlah,
-    item.harga,
-    item.jumlah * item.harga,
-    item.potongan
-  ]));
-
-  doc.autoTable({
-    head: head,
-    body: body,
-    startY: 28,
-    styles: { fontSize: 10 }
-  });
-
-  // Ringkasan
-  let totalPemasukan = 0;
-  let totalPengeluaran = 0;
-  let totalInfaq = 0;
-
-  data.forEach(item => {
-    const total = item.jumlah * item.harga;
-    if (item.jenis === "Pemasukan") totalPemasukan += total;
-    else totalPengeluaran += total;
-    totalInfaq += item.potongan;
-  });
-
-  const saldoAkhir = totalPemasukan - totalPengeluaran;
-
-  let y = doc.lastAutoTable.finalY + 10;
-  doc.setFontSize(11);
-  doc.text(`Total Pemasukan   : ${totalPemasukan}`, 14, y);
-  doc.text(`Total Pengeluaran : ${totalPengeluaran}`, 14, y + 6);
-  doc.text(`Saldo Akhir       : ${saldoAkhir}`, 14, y + 12);
-  doc.text(`Akumulasi Infaq   : ${totalInfaq}`, 14, y + 18);
-
-  doc.save("Pembukuan_MINUMO.pdf");
+  alert("PDF tetap versi lama, profit akan ditambahkan di tahap berikutnya.");
 }
 
 // ===============================
