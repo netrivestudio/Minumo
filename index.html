@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
@@ -21,7 +21,9 @@
     <h1>Makmur Sentosa "MINUMO"</h1>
   </header>
 
-  <!-- TABEL DATA -->
+  <!-- ========================= -->
+  <!-- TABEL DATA (TETAP) -->
+  <!-- ========================= -->
   <section class="form-section">
     <table id="dataTable">
       <thead>
@@ -38,7 +40,9 @@
       <tbody></tbody>
     </table>
 
-    <!-- FORM INPUT -->
+    <!-- ========================= -->
+    <!-- FORM INPUT (TETAP) -->
+    <!-- ========================= -->
     <div class="form-inputs">
       <input type="text" id="namaPelanggan" placeholder="Nama Pelanggan" />
       <input type="date" id="tanggal" />
@@ -46,10 +50,9 @@
         <option value="Pemasukan">Pemasukan</option>
         <option value="Pengeluaran">Pengeluaran</option>
       </select>
-      <input type="number" id="jumlah" placeholder="Jumlah Barang" />
+      <input type="number" id="jumlah" placeholder="Jumlah Barang (Galon)" />
       <input type="number" id="harga" placeholder="Harga Barang" />
 
-      <!-- TOMBOL -->
       <button onclick="tambahData()">Tambah Data</button>
       <button class="btn-danger" onclick="hapusSemua()">Hapus Semua</button>
       <button class="btn-primary" onclick="exportPDF()">Export PDF</button>
@@ -57,7 +60,9 @@
     </div>
   </section>
 
-  <!-- INFO TOTAL -->
+  <!-- ========================= -->
+  <!-- INFO TOTAL (LAMA) -->
+  <!-- ========================= -->
   <section class="info-section">
     <p>Total Pemasukan: <span id="totalPemasukan">0</span></p>
     <p>Total Pengeluaran: <span id="totalPengeluaran">0</span></p>
@@ -65,7 +70,19 @@
     <p>Akumulasi Infaq: <span id="totalInfaq">0</span></p>
   </section>
 
+  <!-- ========================= -->
+  <!-- INFO TAMBAHAN (BARU) -->
+  <!-- ========================= -->
+  <section class="info-section">
+    <p><strong>Info Tambahan (Otomatis)</strong></p>
+    <p>Total Galon Terjual: <span id="totalGalon">0</span></p>
+    <p>Total Modal Galon: <span id="totalModal">0</span></p>
+    <p>Profit Operasional: <span id="profitOperasional">0</span></p>
+  </section>
+
+  <!-- ========================= -->
   <!-- LIBRARY EXPORT -->
+  <!-- ========================= -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.29/dist/jspdf.plugin.autotable.min.js"></script>
