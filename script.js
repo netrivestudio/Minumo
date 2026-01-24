@@ -1,16 +1,16 @@
 // ===============================
-// KONSTANT BISNIS MINUMO
+// LOAD DATA
+// ===============================
+let data = JSON.parse(localStorage.getItem("minumoData")) || [];
+
+// ===============================
+// KONSTANTA BISNIS
 // ===============================
 const MODAL_PER_GALON = 4000;
 const INFAQ_PER_GALON = 500;
 
 // ===============================
-// LOAD DATA DARI LOCAL STORAGE
-// ===============================
-let data = JSON.parse(localStorage.getItem("minumoData")) || [];
-
-// ===============================
-// SIMPAN DATA KE LOCAL STORAGE
+// SIMPAN DATA
 // ===============================
 function simpanData() {
   localStorage.setItem("minumoData", JSON.stringify(data));
@@ -31,23 +31,9 @@ function tambahData() {
     return;
   }
 
-  const total = jumlah * harga;
   const potongan = jenis === "Pemasukan" ? jumlah * INFAQ_PER_GALON : 0;
-  const modal = jenis === "Pemasukan" ? jumlah * MODAL_PER_GALON : 0;
-  const profit = jenis === "Pemasukan" ? total - modal - potongan : -total;
 
-  data.push({
-    nama,
-    tanggal,
-    jenis,
-    jumlah,
-    harga,
-    total,
-    potongan,
-    modal,
-    profit
-  });
-
+  data.push({ nama, tanggal, jenis, jumlah, harga, potongan });
   simpanData();
   renderTable();
   updateInfo();
@@ -58,7 +44,7 @@ function tambahData() {
 }
 
 // ===============================
-// TAMPILKAN DATA KE TABEL
+// RENDER TABEL
 // ===============================
 function renderTable() {
   const tbody = document.querySelector("#dataTable tbody");
@@ -71,8 +57,8 @@ function renderTable() {
       <td>${item.tanggal}</td>
       <td>${item.jenis}</td>
       <td>${item.jumlah}</td>
-      <td>${item.harga}</td>
-      <td>${item.potongan}</td>
+      <td>${item.harga.toLocaleString("id-ID")}</td>
+      <td>${item.potongan.toLocaleString("id-ID")}</td>
       <td><button onclick="hapusBaris(${index})">Hapus</button></td>
     `;
     tbody.appendChild(row);
@@ -80,7 +66,7 @@ function renderTable() {
 }
 
 // ===============================
-// HAPUS SATU BARIS
+// HAPUS BARIS
 // ===============================
 function hapusBaris(index) {
   data.splice(index, 1);
@@ -90,7 +76,7 @@ function hapusBaris(index) {
 }
 
 // ===============================
-// HAPUS SEMUA DATA
+// HAPUS SEMUA
 // ===============================
 function hapusSemua() {
   if (confirm("Yakin mau hapus semua data?")) {
@@ -102,79 +88,55 @@ function hapusSemua() {
 }
 
 // ===============================
-// HITUNG TOTAL (EXTEND, BUKAN GANTI)
+// HITUNG TOTAL & PROFIT
 // ===============================
 function updateInfo() {
   let totalPemasukan = 0;
   let totalPengeluaran = 0;
   let totalInfaq = 0;
   let totalGalon = 0;
-  let totalModal = 0;
-  let profitOperasional = 0;
 
   data.forEach(item => {
+    const total = item.jumlah * item.harga;
+
     if (item.jenis === "Pemasukan") {
-      totalPemasukan += item.total;
+      totalPemasukan += total;
       totalGalon += item.jumlah;
       totalInfaq += item.potongan;
-      totalModal += item.modal;
-      profitOperasional += item.profit;
     } else {
-      totalPengeluaran += item.total;
+      totalPengeluaran += total;
     }
   });
 
-  document.getElementById("totalPemasukan").textContent = totalPemasukan;
-  document.getElementById("totalPengeluaran").textContent = totalPengeluaran;
+  const totalModal = totalGalon * MODAL_PER_GALON;
+  const profitOperasional =
+    totalPemasukan - totalModal - totalInfaq - totalPengeluaran;
+
+  // TAMPILKAN KE LAYAR
+  document.getElementById("totalPemasukan").textContent =
+    totalPemasukan.toLocaleString("id-ID");
+
+  document.getElementById("totalPengeluaran").textContent =
+    totalPengeluaran.toLocaleString("id-ID");
+
   document.getElementById("saldoAkhir").textContent =
-    profitOperasional - totalPengeluaran;
+    (totalPemasukan - totalPengeluaran).toLocaleString("id-ID");
 
-  document.getElementById("totalInfaq").textContent = totalInfaq;
+  document.getElementById("totalInfaq").textContent =
+    totalInfaq.toLocaleString("id-ID");
 
-  // 👉 data tambahan (belum ditampilkan di HTML, tapi SIAP)
-  console.log("Total Galon:", totalGalon);
-  console.log("Total Modal:", totalModal);
-  console.log("Profit Operasional:", profitOperasional);
+  document.getElementById("totalGalon").textContent =
+    totalGalon.toLocaleString("id-ID");
+
+  document.getElementById("totalModal").textContent =
+    totalModal.toLocaleString("id-ID");
+
+  document.getElementById("profitOperasional").textContent =
+    profitOperasional.toLocaleString("id-ID");
 }
 
 // ===============================
-// EXPORT EXCEL (TETAP + TAMBAHAN)
-// ===============================
-function exportExcel() {
-  if (data.length === 0) {
-    alert("Data masih kosong!");
-    return;
-  }
-
-  const exportData = data.map((item, i) => ({
-    No: i + 1,
-    "Nama Pelanggan": item.nama,
-    Tanggal: item.tanggal,
-    Jenis: item.jenis,
-    Galon: item.jumlah,
-    Harga: item.harga,
-    Omzet: item.total,
-    Modal: item.modal,
-    Infaq: item.potongan,
-    Profit: item.profit
-  }));
-
-  const worksheet = XLSX.utils.json_to_sheet(exportData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "MINUMO");
-
-  XLSX.writeFile(workbook, "Pembukuan_MINUMO.xlsx");
-}
-
-// ===============================
-// EXPORT PDF (LOGIC SIAP, TAMPILAN NANTI)
-// ===============================
-function exportPDF() {
-  alert("PDF tetap versi lama, profit akan ditambahkan di tahap berikutnya.");
-}
-
-// ===============================
-// LOAD DATA SAAT APP DIBUKA
+// LOAD AWAL
 // ===============================
 renderTable();
 updateInfo();
