@@ -220,7 +220,7 @@ function exportPDF() {
 // RINGKASAN (TABEL RAPIH & SEJAJAR)
 // ===============================
 doc.autoTable({
-  startY: doc.lastAutoTable.finalY + 10,
+  startY: doc.lastAutoTable.finalY + 4,
   theme: "plain",
   styles: {
     fontSize: 11,
@@ -250,4 +250,5 @@ doc.autoTable({
 // =====================================
 renderTable();
 updateInfo();
+
 
