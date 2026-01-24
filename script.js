@@ -216,13 +216,31 @@ function exportPDF() {
     headStyles: { fillColor: [33, 150, 243], textColor: 255 }
   });
 
-  let y = doc.lastAutoTable.finalY + 10;
-  doc.text(`Total Pemasukan   : Rp ${totalPemasukan.toLocaleString("id-ID")}`, 14, y);
-  doc.text(`Total Pengeluaran : Rp ${totalPengeluaran.toLocaleString("id-ID")}`, 14, y + 6);
-  doc.text(`Total Galon       : ${totalGalon}`, 14, y + 12);
-  doc.text(`Total Modal       : Rp ${totalModal.toLocaleString("id-ID")}`, 14, y + 18);
-  doc.text(`Total Infaq       : Rp ${totalInfaq.toLocaleString("id-ID")}`, 14, y + 24);
-  doc.text(`Profit            : Rp ${profitOperasional.toLocaleString("id-ID")}`, 14, y + 30);
+  // ===============================
+// RINGKASAN (TABEL RAPIH & SEJAJAR)
+// ===============================
+doc.autoTable({
+  startY: doc.lastAutoTable.finalY + 10,
+  theme: "plain",
+  styles: {
+    fontSize: 11,
+    cellPadding: 2
+  },
+  columnStyles: {
+    0: { cellWidth: 60, fontStyle: "bold" },
+    1: { cellWidth: 5, halign: "center" },
+    2: { cellWidth: 60 }
+  },
+  body: [
+    ["Total Pemasukan", ":", `Rp ${totalPemasukan.toLocaleString("id-ID")}`],
+    ["Total Pengeluaran", ":", `Rp ${totalPengeluaran.toLocaleString("id-ID")}`],
+    ["Total Galon", ":", totalGalon.toLocaleString("id-ID")],
+    ["Total Modal", ":", `Rp ${totalModal.toLocaleString("id-ID")}`],
+    ["Total Infaq", ":", `Rp ${totalInfaq.toLocaleString("id-ID")}`],
+    ["Profit", ":", `Rp ${profitOperasional.toLocaleString("id-ID")}`]
+  ]
+});
+
 
   doc.save("Pembukuan_MINUMO_Lengkap.pdf");
 }
@@ -232,3 +250,4 @@ function exportPDF() {
 // =====================================
 renderTable();
 updateInfo();
+
