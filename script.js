@@ -1,8 +1,8 @@
 // =====================================
 // KONSTANTA BISNIS
 // =====================================
-const MODAL_PER_GALON = 4000;
-const INFAQ_PER_GALON = 500;
+const MODAL_PER_GALON = 4500;
+const BIAYA_OPERASIONAL_PER_GALON = 500;
 
 // =====================================
 // LOAD DATA DARI LOCAL STORAGE
@@ -10,7 +10,7 @@ const INFAQ_PER_GALON = 500;
 let data = JSON.parse(localStorage.getItem("minumoData")) || [];
 
 // =====================================
-// HELPER AMAN UNTUK SET TEXT
+// HELPER AMAN SET TEXT
 // =====================================
 function setText(id, value) {
   const el = document.getElementById(id);
@@ -33,26 +33,38 @@ function tambahData() {
   const jenis = document.getElementById("jenis").value;
   const jumlah = parseInt(document.getElementById("jumlah").value) || 0;
   const harga = parseInt(document.getElementById("harga").value) || 0;
+  const infaqPerGalon = parseInt(document.getElementById("infaq").value) || 0;
 
   if (!nama || !tanggal || jumlah <= 0 || harga <= 0) {
     alert("Isi semua data dengan benar!");
     return;
   }
 
-  const potongan = jenis === "Pemasukan" ? jumlah * INFAQ_PER_GALON : 0;
+  const potonganInfaq =
+    jenis === "Pemasukan" ? jumlah * infaqPerGalon : 0;
 
-  data.push({ nama, tanggal, jenis, jumlah, harga, potongan });
+  data.push({
+    nama,
+    tanggal,
+    jenis,
+    jumlah,
+    harga,
+    infaqPerGalon,
+    potongan: potonganInfaq
+  });
+
   simpanData();
   renderTable();
   updateInfo();
 
+  // reset
   document.getElementById("namaPelanggan").value = "";
   document.getElementById("jumlah").value = "";
   document.getElementById("harga").value = "";
 }
 
 // =====================================
-// TAMPILKAN DATA KE TABEL
+// RENDER TABEL
 // =====================================
 function renderTable() {
   const tbody = document.querySelector("#dataTable tbody");
@@ -61,8 +73,8 @@ function renderTable() {
   tbody.innerHTML = "";
 
   data.forEach((item, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
       <td>${item.nama}</td>
       <td>${item.tanggal}</td>
       <td>${item.jenis}</td>
@@ -71,12 +83,12 @@ function renderTable() {
       <td>Rp ${item.potongan.toLocaleString("id-ID")}</td>
       <td><button onclick="hapusBaris(${index})">Hapus</button></td>
     `;
-    tbody.appendChild(row);
+    tbody.appendChild(tr);
   });
 }
 
 // =====================================
-// HAPUS SATU BARIS
+// HAPUS BARIS
 // =====================================
 function hapusBaris(index) {
   data.splice(index, 1);
@@ -86,51 +98,67 @@ function hapusBaris(index) {
 }
 
 // =====================================
-// HAPUS SEMUA DATA
+// HAPUS SEMUA
 // =====================================
 function hapusSemua() {
-  if (confirm("Yakin mau hapus semua data?")) {
-    data = [];
-    simpanData();
-    renderTable();
-    updateInfo();
-  }
+  if (!confirm("Yakin mau hapus semua data?")) return;
+  data = [];
+  simpanData();
+  renderTable();
+  updateInfo();
 }
 
 // =====================================
-// HITUNG TOTAL + PROFIT
+// HITUNG TOTAL & PROFIT
 // =====================================
 function updateInfo() {
-  let totalPemasukan = 0;
+  let totalPenjualan = 0;
   let totalPengeluaran = 0;
   let totalInfaq = 0;
   let totalGalon = 0;
+  let totalBiayaOperasional = 0;
 
   data.forEach(item => {
-    const total = item.jumlah * item.harga;
+    const omzet = item.jumlah * item.harga;
 
     if (item.jenis === "Pemasukan") {
-      totalPemasukan += total;
+      totalPenjualan += omzet;
       totalGalon += item.jumlah;
       totalInfaq += item.potongan;
+      totalBiayaOperasional +=
+        item.jumlah * BIAYA_OPERASIONAL_PER_GALON;
     } else {
-      totalPengeluaran += total;
+      totalPengeluaran += omzet;
     }
   });
 
   const totalModal = totalGalon * MODAL_PER_GALON;
+
   const profitOperasional =
-    totalPemasukan - totalModal - totalInfaq - totalPengeluaran;
+    totalPenjualan
+    - totalModal
+    - totalBiayaOperasional
+    - totalInfaq
+    - totalPengeluaran;
 
-  setText("totalPemasukan", totalPemasukan.toLocaleString("id-ID"));
+  // tampilkan
+  setText("totalPenjualan", totalPenjualan.toLocaleString("id-ID"));
   setText("totalPengeluaran", totalPengeluaran.toLocaleString("id-ID"));
-  setText("saldoAkhir", (totalPemasukan - totalPengeluaran).toLocaleString("id-ID"));
+  setText(
+    "saldoAkhir",
+    (totalPenjualan - totalPengeluaran).toLocaleString("id-ID")
+  );
   setText("totalInfaq", totalInfaq.toLocaleString("id-ID"));
-
-  // TAMBAHAN INFO
   setText("totalGalon", totalGalon.toLocaleString("id-ID"));
   setText("totalModal", totalModal.toLocaleString("id-ID"));
-  setText("profitOperasional", profitOperasional.toLocaleString("id-ID"));
+  setText(
+    "totalBiayaOperasional",
+    totalBiayaOperasional.toLocaleString("id-ID")
+  );
+  setText(
+    "profitOperasional",
+    profitOperasional.toLocaleString("id-ID")
+  );
 }
 
 // =====================================
@@ -142,26 +170,26 @@ function exportExcel() {
     return;
   }
 
-  const exportData = data.map((item, i) => ({
+  const rows = data.map((item, i) => ({
     No: i + 1,
     Nama: item.nama,
     Tanggal: item.tanggal,
     Jenis: item.jenis,
-    Jumlah: item.jumlah,
+    Galon: item.jumlah,
     Harga: item.harga,
-    Total: item.jumlah * item.harga,
+    Omzet: item.jumlah * item.harga,
     Infaq: item.potongan
   }));
 
-  const worksheet = XLSX.utils.json_to_sheet(exportData);
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "MINUMO");
+  const ws = XLSX.utils.json_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "MINUMO");
 
-  XLSX.writeFile(workbook, "Pembukuan_MINUMO.xlsx");
+  XLSX.writeFile(wb, "Pembukuan_MINUMO.xlsx");
 }
 
 // =====================================
-// EXPORT PDF (STABIL)
+// EXPORT PDF
 // =====================================
 function exportPDF() {
   if (data.length === 0) {
@@ -169,28 +197,34 @@ function exportPDF() {
     return;
   }
 
-  const jsPDF = window.jspdf.jsPDF;
-  const doc = new jsPDF("p", "mm", "a4");
+  const doc = new window.jspdf.jsPDF("p", "mm", "a4");
 
-  let totalPemasukan = 0;
+  let totalPenjualan = 0;
   let totalPengeluaran = 0;
   let totalInfaq = 0;
   let totalGalon = 0;
+  let totalBiayaOperasional = 0;
 
   data.forEach(item => {
-    const total = item.jumlah * item.harga;
+    const omzet = item.jumlah * item.harga;
     if (item.jenis === "Pemasukan") {
-      totalPemasukan += total;
+      totalPenjualan += omzet;
       totalGalon += item.jumlah;
       totalInfaq += item.potongan;
+      totalBiayaOperasional +=
+        item.jumlah * BIAYA_OPERASIONAL_PER_GALON;
     } else {
-      totalPengeluaran += total;
+      totalPengeluaran += omzet;
     }
   });
 
   const totalModal = totalGalon * MODAL_PER_GALON;
   const profitOperasional =
-    totalPemasukan - totalModal - totalInfaq - totalPengeluaran;
+    totalPenjualan
+    - totalModal
+    - totalBiayaOperasional
+    - totalInfaq
+    - totalPengeluaran;
 
   doc.setFontSize(16);
   doc.text('Makmur Sentosa "MINUMO"', 14, 15);
@@ -200,7 +234,7 @@ function exportPDF() {
   doc.autoTable({
     startY: 30,
     head: [[
-      "No", "Nama", "Tanggal", "Jenis", "Galon", "Harga", "Total", "Infaq"
+      "No", "Nama", "Tanggal", "Jenis", "Galon", "Harga", "Omzet", "Infaq"
     ]],
     body: data.map((item, i) => ([
       i + 1,
@@ -216,31 +250,25 @@ function exportPDF() {
     headStyles: { fillColor: [33, 150, 243], textColor: 255 }
   });
 
-  // ===============================
-// RINGKASAN (TABEL RAPIH & SEJAJAR)
-// ===============================
-doc.autoTable({
-  startY: doc.lastAutoTable.finalY + 4,
-  theme: "plain",
-  styles: {
-    fontSize: 11,
-    cellPadding: 2
-  },
-  columnStyles: {
-    0: { cellWidth: 60, fontStyle: "bold" },
-    1: { cellWidth: 5, halign: "center" },
-    2: { cellWidth: 60 }
-  },
-  body: [
-    ["Total Pemasukan", ":", `Rp ${totalPemasukan.toLocaleString("id-ID")}`],
-    ["Total Pengeluaran", ":", `Rp ${totalPengeluaran.toLocaleString("id-ID")}`],
-    ["Total Galon", ":", totalGalon.toLocaleString("id-ID")],
-    ["Total Modal", ":", `Rp ${totalModal.toLocaleString("id-ID")}`],
-    ["Total Infaq", ":", `Rp ${totalInfaq.toLocaleString("id-ID")}`],
-    ["Profit", ":", `Rp ${profitOperasional.toLocaleString("id-ID")}`]
-  ]
-});
-
+  doc.autoTable({
+    startY: doc.lastAutoTable.finalY + 4,
+    theme: "plain",
+    styles: { fontSize: 11, cellPadding: 1 },
+    columnStyles: {
+      0: { cellWidth: 60, fontStyle: "bold" },
+      1: { cellWidth: 5, halign: "center" },
+      2: { cellWidth: 60 }
+    },
+    body: [
+      ["Total Penjualan", ":", `Rp ${totalPenjualan.toLocaleString("id-ID")}`],
+      ["Total Pengeluaran", ":", `Rp ${totalPengeluaran.toLocaleString("id-ID")}`],
+      ["Total Galon", ":", totalGalon],
+      ["Total Modal", ":", `Rp ${totalModal.toLocaleString("id-ID")}`],
+      ["Biaya Operasional", ":", `Rp ${totalBiayaOperasional.toLocaleString("id-ID")}`],
+      ["Total Infaq", ":", `Rp ${totalInfaq.toLocaleString("id-ID")}`],
+      ["Profit Operasional", ":", `Rp ${profitOperasional.toLocaleString("id-ID")}`]
+    ]
+  });
 
   doc.save("Pembukuan_MINUMO_Lengkap.pdf");
 }
@@ -250,5 +278,3 @@ doc.autoTable({
 // =====================================
 renderTable();
 updateInfo();
-
-
