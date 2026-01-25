@@ -227,7 +227,7 @@ function exportPDF() {
     - totalPengeluaran;
 
   doc.setFontSize(16);
-  doc.text('Makmur Sentosa "MINUMO"', 14, 15);
+ doc.text('MAKMUR SENTOSA "Agen Air Mineral Minumo"', 14, 15);
   doc.setFontSize(10);
   doc.text(`Export: ${new Date().toLocaleString("id-ID")}`, 14, 22);
 
@@ -278,3 +278,4 @@ function exportPDF() {
 // =====================================
 renderTable();
 updateInfo();
+
