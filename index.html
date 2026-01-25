@@ -16,43 +16,56 @@
 
 <body>
 
+  <!-- ========================= -->
   <!-- HEADER -->
+  <!-- ========================= -->
   <header>
     <h1>Makmur Sentosa "MINUMO"</h1>
   </header>
 
   <!-- ========================= -->
-  <!-- TABEL DATA (TETAP) -->
+  <!-- TABEL DATA -->
   <!-- ========================= -->
   <section class="form-section">
     <table id="dataTable">
       <thead>
         <tr>
-          <th>Nama Pelanggan</th>
+          <th>Pelanggan & Alamat</th>
           <th>Tanggal</th>
-          <th>Pemasukan / Pengeluaran</th>
-          <th>Jumlah Barang</th>
-          <th>Harga Barang</th>
-          <th>Potongan Infaq</th>
-          <th>Hapus Input</th>
+          <th>Jenis</th>
+          <th>Jumlah Galon</th>
+          <th>Harga / Galon</th>
+          <th>Infaq</th>
+          <th>Hapus</th>
         </tr>
       </thead>
       <tbody></tbody>
     </table>
 
     <!-- ========================= -->
-    <!-- FORM INPUT (TETAP) -->
+    <!-- FORM INPUT -->
     <!-- ========================= -->
     <div class="form-inputs">
       <input type="text" id="namaPelanggan" placeholder="Nama Pelanggan" />
       <input type="date" id="tanggal" />
+
       <select id="jenis">
-        <option value="Pemasukan">Pemasukan</option>
+        <option value="Pemasukan">Penjualan</option>
         <option value="Pengeluaran">Pengeluaran</option>
       </select>
-      <input type="number" id="jumlah" placeholder="Jumlah Barang (Galon)" />
-      <input type="number" id="harga" placeholder="Harga Barang" />
 
+      <input type="number" id="jumlah" placeholder="Jumlah Galon" />
+      <input type="number" id="harga" placeholder="Harga per Galon" />
+
+      <!-- INFAQ TIDAK PATEN -->
+      <select id="infaq">
+        <option value="0">Infaq 0</option>
+        <option value="500">Infaq 500</option>
+        <option value="1000">Infaq 1.000</option>
+        <option value="2000">Infaq 2.000</option>
+      </select>
+
+      <!-- TOMBOL -->
       <button onclick="tambahData()">Tambah Data</button>
       <button class="btn-danger" onclick="hapusSemua()">Hapus Semua</button>
       <button class="btn-primary" onclick="exportPDF()">Export PDF</button>
@@ -61,27 +74,28 @@
   </section>
 
   <!-- ========================= -->
-  <!-- INFO TOTAL (LAMA) -->
+  <!-- INFO TOTAL (INTI) -->
   <!-- ========================= -->
   <section class="info-section">
-    <p>Total Pemasukan: <span id="totalPemasukan">0</span></p>
+    <p>Total Penjualan: <span id="totalPenjualan">0</span></p>
     <p>Total Pengeluaran: <span id="totalPengeluaran">0</span></p>
     <p>Saldo Akhir: <span id="saldoAkhir">0</span></p>
-    <p>Akumulasi Infaq: <span id="totalInfaq">0</span></p>
+    <p>Total Infaq: <span id="totalInfaq">0</span></p>
   </section>
 
   <!-- ========================= -->
-  <!-- INFO TAMBAHAN (BARU) -->
+  <!-- INFO OPERASIONAL (BARU) -->
   <!-- ========================= -->
   <section class="info-section">
-    <p><strong>Info Tambahan (Otomatis)</strong></p>
+    <p><strong>Info Operasional Galon</strong></p>
     <p>Total Galon Terjual: <span id="totalGalon">0</span></p>
-    <p>Total Modal Galon: <span id="totalModal">0</span></p>
-    <p>Profit Operasional: <span id="profitOperasional">0</span></p>
+    <p>Total Modal Galon (4.500): <span id="totalModal">0</span></p>
+    <p>Biaya Operasional Galon (500): <span id="totalBiayaOperasional">0</span></p>
+    <p><strong>Profit Operasional: <span id="profitOperasional">0</span></strong></p>
   </section>
 
   <!-- ========================= -->
-  <!-- LIBRARY EXPORT -->
+  <!-- LIBRARY -->
   <!-- ========================= -->
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
