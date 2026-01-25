@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Makmur Sentosa "Agen Air Mineral MINUMO"</title>
+  <title>Makmur Sentosa "MINUMO"</title>
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
@@ -20,7 +20,7 @@
   <!-- HEADER -->
   <!-- ========================= -->
   <header>
-    <h1>Makmur Sentosa "Agen Air Mineral MINUMO"</h1>
+    <h1>Makmur Sentosa "MINUMO"</h1>
   </header>
 
   <!-- ========================= -->
@@ -30,12 +30,12 @@
     <table id="dataTable">
       <thead>
         <tr>
-          <th>Pelanggan & Alamat</th>
+          <th>Nama Pelanggan</th>
           <th>Tanggal</th>
           <th>Jenis</th>
           <th>Jumlah Galon</th>
           <th>Harga / Galon</th>
-          <th>Infaq</th>
+          <th>Total Infaq</th>
           <th>Hapus</th>
         </tr>
       </thead>
@@ -50,14 +50,14 @@
       <input type="date" id="tanggal" />
 
       <select id="jenis">
-        <option value="Pemasukan">Penjualan</option>
+        <option value="Pemasukan">Pemasukan</option>
         <option value="Pengeluaran">Pengeluaran</option>
       </select>
 
       <input type="number" id="jumlah" placeholder="Jumlah Galon" />
       <input type="number" id="harga" placeholder="Harga per Galon" />
 
-      <!-- INFAQ TIDAK PATEN -->
+      <!-- INFAQ FLEKSIBEL -->
       <select id="infaq">
         <option value="0">Infaq 0</option>
         <option value="500">Infaq 500</option>
@@ -74,7 +74,7 @@
   </section>
 
   <!-- ========================= -->
-  <!-- INFO TOTAL (INTI) -->
+  <!-- INFO UTAMA -->
   <!-- ========================= -->
   <section class="info-section">
     <p>Total Penjualan: <span id="totalPenjualan">0</span></p>
@@ -84,7 +84,7 @@
   </section>
 
   <!-- ========================= -->
-  <!-- INFO OPERASIONAL (BARU) -->
+  <!-- INFO OPERASIONAL -->
   <!-- ========================= -->
   <section class="info-section">
     <p><strong>Info Operasional Galon</strong></p>
@@ -115,4 +115,3 @@
 
 </body>
 </html>
-
