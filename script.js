@@ -33,15 +33,18 @@ function tambahData() {
   const jenis = document.getElementById("jenis").value;
   const jumlah = parseInt(document.getElementById("jumlah").value) || 0;
   const harga = parseInt(document.getElementById("harga").value) || 0;
-  const infaqPerGalon = parseInt(document.getElementById("infaq").value) || 0;
+
+  // 🔥 INFAQ MANUAL (NOMINAL BEBAS)
+  const infaqNominal =
+    parseInt(document.getElementById("infaq").value) || 0;
 
   if (!nama || !tanggal || jumlah <= 0 || harga <= 0) {
     alert("Isi semua data dengan benar!");
     return;
   }
 
-  const potonganInfaq =
-    jenis === "Pemasukan" ? jumlah * infaqPerGalon : 0;
+  // ✅ Infaq HANYA dari input, tidak dikali galon
+  const potonganInfaq = jenis === "Pemasukan" ? infaqNominal : 0;
 
   data.push({
     nama,
@@ -49,7 +52,6 @@ function tambahData() {
     jenis,
     jumlah,
     harga,
-    infaqPerGalon,
     potongan: potonganInfaq
   });
 
@@ -57,10 +59,11 @@ function tambahData() {
   renderTable();
   updateInfo();
 
-  // reset
+  // reset input
   document.getElementById("namaPelanggan").value = "";
   document.getElementById("jumlah").value = "";
   document.getElementById("harga").value = "";
+  document.getElementById("infaq").value = "";
 }
 
 // =====================================
@@ -141,7 +144,7 @@ function updateInfo() {
     - totalInfaq
     - totalPengeluaran;
 
-  // tampilkan
+  // TAMPILKAN KE UI
   setText("totalPenjualan", totalPenjualan.toLocaleString("id-ID"));
   setText("totalPengeluaran", totalPengeluaran.toLocaleString("id-ID"));
   setText(
@@ -227,7 +230,7 @@ function exportPDF() {
     - totalPengeluaran;
 
   doc.setFontSize(16);
- doc.text('MAKMUR SENTOSA "Agen Air Mineral Minumo"', 14, 15);
+  doc.text('MAKMUR SENTOSA "Agen Air Mineral Minumo"', 14, 15);
   doc.setFontSize(10);
   doc.text(`Export: ${new Date().toLocaleString("id-ID")}`, 14, 22);
 
@@ -270,7 +273,7 @@ function exportPDF() {
     ]
   });
 
-  doc.save("Pembukuan_MINUMO_Lengkap.pdf");
+  doc.save("Pembukuan_Makmur Sentosa.pdf");
 }
 
 // =====================================
@@ -278,4 +281,3 @@ function exportPDF() {
 // =====================================
 renderTable();
 updateInfo();
-
