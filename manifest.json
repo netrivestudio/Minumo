@@ -1,10 +1,9 @@
 {
-  "name": "Makmur Sentosa MINUMO",
-  "short_name": "MINUMO",
-  "start_url": ".",
-  "scope": ".",
+  "name": "Makmur Sentosa",
+  "short_name": "Makmur Sentosa",
+  "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#121212",
+  "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "icons": [
     {
